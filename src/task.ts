@@ -19,11 +19,17 @@ module GruntTs{
 
         return Q.Promise((resolve: (val: any) => void, reject: (val: any) => void, notify: (val: any) => void) => {
 
+            var success: boolean;
             if(options.gWatch){
                 watch(grunt, options, host);
             }else{
                 try{
-                    if(compile(options, host)){
+                    success = compile(options, host);
+                    grunt.event.emit('grunt-typescript', {
+                        event: 'compile',
+                        success: success
+                    });
+                    if(success){
                         resolve(true);
                     }else{
                         reject(false);
@@ -50,10 +56,15 @@ module GruntTs{
             }),
             startCompile = (files?: string[]) => {
                 return runTask(grunt, host, watchOpt.before).then(() => {
-                    if(!recompile(options, host, files)){
+                    var success = recompile(options, host, files);
+                    if(!success){
                         //失敗だった場合はリセット
                         host.reset(files);
                     }
+                    grunt.event.emit('grunt-typescript', {
+                        event: 'compile',
+                        success: success
+                    });
                     return runTask(grunt, host, watchOpt.after);
                 }).then(function(){
                     writeWatching(watchPath);

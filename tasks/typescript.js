@@ -749,12 +749,18 @@ var GruntTs;
         host.io.verbose("--task.execute");
         host.io.verbose("  options: " + JSON.stringify(options));
         return Q.Promise(function (resolve, reject, notify) {
+            var success;
             if (options.gWatch) {
                 watch(grunt, options, host);
             }
             else {
                 try {
-                    if (compile(options, host)) {
+                    success = compile(options, host);
+                    grunt.event.emit('grunt-typescript', {
+                        event: 'compile',
+                        success: success
+                    });
+                    if (success) {
                         resolve(true);
                     }
                     else {
@@ -779,10 +785,15 @@ var GruntTs;
             });
         }), startCompile = function (files) {
             return runTask(grunt, host, watchOpt.before).then(function () {
-                if (!recompile(options, host, files)) {
+                var success = recompile(options, host, files);
+                if (!success) {
                     //失敗だった場合はリセット
                     host.reset(files);
                 }
+                grunt.event.emit('grunt-typescript', {
+                    event: 'compile',
+                    success: success
+                });
                 return runTask(grunt, host, watchOpt.after);
             }).then(function () {
                 writeWatching(watchPath);
