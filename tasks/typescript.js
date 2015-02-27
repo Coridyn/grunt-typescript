@@ -983,3 +983,5 @@ module.exports = function (grunt) {
         });
     });
 };
+// Expose the GruntTs object for testing.
+module.exports.GruntTs = GruntTs;

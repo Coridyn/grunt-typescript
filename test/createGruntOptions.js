@@ -2,7 +2,7 @@ var grunt = require("grunt");
 var fs = require("fs");
 var path = require("path");
 
-var GruntTs = require("../tasks/typescript");
+var GruntTs = require("../tasks/typescript").GruntTs;
 
 
 function getOptions(options, files){
@@ -21,7 +21,13 @@ function getOptions(options, files){
 
 
 // Get a gruntFile object.
-
+function getFile(fileConfig){
+	var files = grunt.task.normalizeMultiTaskFiles(fileConfig);
+	if (files && files.length){
+		return files[0];
+	}
+	return;
+}
 
 
 module.exports.createGruntOptions = {
@@ -29,20 +35,21 @@ module.exports.createGruntOptions = {
 	createGruntOptions: function(test){
 		"use strict";
 		
-		test.expect(1);
+		test.expect(3);
 		
-		var fileObj = grunt.task.normalizeMultiTaskFiles({
-			src: "",
-			dest: ""
-		});
 		var result = GruntTs.createGruntOptions(
 			{},
 			grunt,
-			fileObj,
+			getFile({
+				src: "test/fixtures/gWatch/**/*.ts",
+				dest: "test/temp/createGruntOptions/gWatch"
+			}),
 			null
 		);
 		
-		test.equal(result, null);
+		test.notEqual(result, null);
+		test.notEqual(result.tsOpts, null);
+		test.equal(result.dest, "test/temp/createGruntOptions/gWatch");
 		
 		test.done();
 	},
@@ -53,32 +60,35 @@ module.exports.createGruntOptions = {
 		
 		test.expect(1);
 		
-		// TODO: Avoid interpolation strings here.
-		var fileObj = grunt.task.normalizeMultiTaskFiles({
+		/*
+		// The src glob will resolve to these files:
+		"test/ts-specs/config/KwsTypeMapperConfigSpec.ts",
+		"test/ts-specs/mocks/AppModelMocks.ts",
+		"test/ts-specs/mocks/types/TypeMocks.ts"
+		*/	
+		var fileObj = getFile({
 			src: [
 				"test/fixtures/gWatch/**/*.ts"
 			],
 			dest: "test/temp/createGruntOptions/gWatch"
-		})
-		
-		/*
-		// We expect the src glob to resolve to:
-		"test/ts-specs/config/KwsTypeMapperConfigSpec.ts",
-		"test/ts-specs/mocks/AppModelMocks.ts",
-		"test/ts-specs/mocks/types/TypeMocks.ts"
-		*/
-	
-		/*
-		// And end up as the resolved path:
-		"test/ts-specs"
-		*/
+		});
 		
 		var result = getOptions({
 			watch: true
 		}, fileObj);
 		
-		test.equal(result.gWatch.path, ['']);
+		// // grunt-typescript@0.6.2+
+		// // Correct: "test/fixtures/gWatch"
+		// var expectedPath = "test/fixtures/gWatch";
 		
+		// grunt-typescript@0.6.1
+		// Incorrect: "test/fixtures/gWatch/mocks"
+		var expectedPath = "test/fixtures/gWatch/mocks";
+		
+		// We expect the result to be the resolved version of this:
+		// ["test/fixtures/gWatch"]
+		var expected = [GruntTs.util.normalizePath(path.resolve(expectedPath))];
+		test.equal(result.gWatch.path[0], expected[0]);
 		
 		test.done();
 	}

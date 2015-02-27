@@ -75,3 +75,7 @@ module.exports = function(grunt: IGrunt){
         });
     });
 };
+
+
+// Expose the GruntTs object for testing.
+module.exports.GruntTs = GruntTs;
