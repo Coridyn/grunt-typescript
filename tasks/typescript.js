@@ -296,12 +296,7 @@ var GruntTs;
                 if (match) {
                     return GruntTs.util.normalizePath(_path.resolve(prev, match[0]));
                 }
-                // 2015-02-27: Original behaviour
-                // Doesn't handle '../..' correctly.
-                // match = right.match(/^(\.\.\/)+/);
-                // 2015-02-27: New behaviour
-                // Match one or more '../..' groups.
-                match = right.match(/^(\.\.\/)(\.\.\/?)*/);
+                match = right.match(/^(\.\.(\/)?)+/);
                 if (match) {
                     return GruntTs.util.normalizePath(_path.resolve(curr, match[0]));
                 }
