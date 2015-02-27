@@ -296,7 +296,7 @@ var GruntTs;
                 if (match) {
                     return GruntTs.util.normalizePath(_path.resolve(prev, match[0]));
                 }
-                match = right.match(/^(\.\.\/)+/);
+                match = right.match(/^(\.\.(\/)?)+/);
                 if (match) {
                     return GruntTs.util.normalizePath(_path.resolve(curr, match[0]));
                 }
