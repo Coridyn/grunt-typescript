@@ -166,6 +166,7 @@ module.exports = function(grunt){
             tests:["test/test.js", "test/errorTest.js", "test/createGruntOptions.js"]
             //tests:["test/errorTest.js"]
             //tests:["test/watchTest.js"]
+            //tests:["test/createGruntOptions.js"]
         },
         clean: {
             test: [
