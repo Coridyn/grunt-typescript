@@ -163,7 +163,7 @@ module.exports = function(grunt){
             } : {}
         },
         nodeunit:{
-            tests:["test/test.js", "test/errorTest.js"]
+            tests:["test/test.js", "test/errorTest.js", "test/createGruntOptions.js"]
             //tests:["test/errorTest.js"]
             //tests:["test/watchTest.js"]
         },
