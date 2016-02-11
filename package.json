@@ -2,7 +2,7 @@
   "author": "kazuhide maruyama",
   "name": "grunt-typescript",
   "description": "compile typescript to javascript",
-  "version": "0.6.1-wiwo.2",
+  "version": "0.6.1-wiwo.3",
   "homepage": "https://github.com/k-maru/grunt-typescript",
   "repository": {
     "type": "git",
@@ -30,8 +30,6 @@
     "chokidar": "~0.10.2"
   },
   "peerDependencies": {
-    "grunt": "~0.4.5",
-    "typescript": "1.4.1"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
